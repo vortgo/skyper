@@ -2,30 +2,28 @@
 
 namespace App\Console\Commands\Skyper;
 
+use App\Services\DevLifeService;
 use App\Skyper\Attachments\Animation;
 use App\Skyper\Drivers\SkyperDriver;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use Illuminate\Console\Command;
-use App\Services\AdviseService;
-use BotMan\BotMan\Messages\Outgoing\Question;
-use  BotMan\BotMan\Messages\Outgoing\Actions\Button;
 
-class Message extends Command
+class DevLife extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'skyper:message {chat} {message?}';
+    protected $signature = 'skyper:dev-life {chat}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send message to chat';
+    protected $description = 'Skyper Dev life';
 
     /**
      * Create a new command instance.
@@ -44,9 +42,11 @@ class Message extends Command
      */
     public function handle()
     {
-        $attachment = new Animation('http://image-url-here.jpg');
+        $devLifeService = new DevLifeService();
+        list($description, $img) = $devLifeService->get();
 
-        // Build message object
+        $attachment = new Animation($img);
+        $attachment->setSubtitle($description);
         $message = OutgoingMessage::create()
             ->withAttachment($attachment);
         /** @var BotMan $bot */
